@@ -31,6 +31,7 @@ app.use(limiter);
 const allowedOrigins = [
   'http://localhost:3000',
   'http://localhost:5000',
+  'https://academic-wb-bk.onrender.com',
 ];
 
 if (process.env.CLIENT_URL) {
