@@ -42,14 +42,43 @@ export const deleteRequest = async (req, res) => {
   res.json({ message: "Request deleted" });
 };
 
+
 // Filter Requests by date and class
 export const filterRequests = async (req, res) => {
-  const { date, classStandard } = req.query;
+  const { date, year, classStandard } = req.query;
 
   const filter = {};
-  if (date) filter.date = date;
+
+  // Filter by exact date (yyyy-mm-dd)
+  if (date) {
+    const parsedDate = new Date(date);
+    const nextDay = new Date(parsedDate);
+    nextDay.setDate(parsedDate.getDate() + 1);
+  
+    filter.date = {
+      $gte: parsedDate,
+      $lt: nextDay,
+    };
+  }
+
+  // Filter by year only (yyyy)
+  if (year && !date) {
+    const startOfYear = new Date(`${year}-01-01`);
+    const endOfYear = new Date(`${parseInt(year) + 1}-01-01`);
+
+    filter.date = {
+      $gte: startOfYear,
+      $lt: endOfYear,
+    };
+  }
+
+  // Filter by classStandard
   if (classStandard) filter.classStandard = classStandard;
 
-  const requests = await Request.find(filter);
-  res.json(requests);
+  try {
+    const requests = await Request.find(filter);
+    res.json(requests);
+  } catch (err) {
+    res.status(500).json({ message: 'Error fetching filtered requests', error: err.message });
+  }
 };

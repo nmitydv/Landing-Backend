@@ -8,7 +8,7 @@ const requestSchema = new mongoose.Schema(
     schoolName: { type: String, required: true },
     message: { type: String },
     classStandard: { type: String, enum: ["10th", "12th"], required: true },
-    date: { type: String, required: true },
+    date: { type: Date },
     createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "Admin" },
   },
   { timestamps: true }
