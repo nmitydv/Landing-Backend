@@ -1,11 +1,8 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import connectDB from './config/db.js';
-import userRoutes from './routes/userRoutes.js';
-import mallRoutes from './routes/mallRoutes.js';
-import shopRoutes from './routes/shopRoutes.js';
-import offerRoutes from './routes/offerRoutes.js';
-import couponRoutes from './routes/couponRoutes.js';
+import adminRoutes from "./routes/adminRoutes.js";
+import requestRoutes from "./routes/requestRoutes.js";
 import swaggerUi from 'swagger-ui-express';
 import { readFileSync } from 'fs';
 import cors from 'cors';
@@ -22,32 +19,34 @@ connectDB();
 // Initialize Express app
 const app = express();
 
-// Rate limiting configuration
+// Rate limiting
 const limiter = rateLimit({
   windowMs: 1 * 60 * 1000, // 1 minute
-  max: 100, // limit each IP to 100 requests per windowMs
+  max: 100,
   message: 'Too many requests from this IP, please try again later.',
 });
-
-// Apply rate limiter to all routes
 app.use(limiter);
 
-// Allowed origins for CORS
+// Allowed origins
 const allowedOrigins = [
-  '*',
   'http://localhost:3000',
+  'http://localhost:5000',
 ];
 
 if (process.env.CLIENT_URL) {
   allowedOrigins.push(process.env.CLIENT_URL);
 }
 
-app.options('*', cors());  // Pre-flight requests handling
-
-// Proper CORS configuration
-app.use(cors({
+// Improved CORS configuration
+const corsOptions = {
   origin: function (origin, callback) {
-    if (!origin) return callback(null, true);
+    if (!origin) return callback(null, true); // allow Postman, curl, etc.
+
+    // Allow all origins in development
+    if (process.env.NODE_ENV === 'development') {
+      return callback(null, true);
+    }
+
     if (allowedOrigins.includes(origin)) {
       return callback(null, true);
     } else {
@@ -55,26 +54,29 @@ app.use(cors({
       return callback(new Error('Not allowed by CORS'));
     }
   },
+  credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
   allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true, // if using cookies or auth headers
-}));
+};
+
+app.use(cors(corsOptions));
 
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(morgan('dev')); // Morgan logger
+app.use(morgan('dev'));
 
-// Swagger Documentation
+// Swagger documentation
 const swaggerFile = JSON.parse(
   readFileSync(new URL('./swagger-output.json', import.meta.url), 'utf-8')
 );
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerFile));
 
-// API Routes
-app.use('/api/users', userRoutes);
+// Routes
+app.use("/api/admin", adminRoutes);
+app.use("/api/requests", requestRoutes);
 
-// Start server
+// Server start
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);

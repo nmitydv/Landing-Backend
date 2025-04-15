@@ -1,8 +1,8 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "Mall Finder API",
-    "description": "API documentation for Mall Finder App",
+    "title": "Academic Website API",
+    "description": "API documentation for Academic Website API",
     "version": "1.0.0"
   },
   "basePath": "/",
@@ -20,42 +20,45 @@
     }
   ],
   "paths": {
-    "/api/users/register": {
+    "/api/admin/register": {
       "post": {
-        "summary": "Register a new user",
         "tags": [
-          "Users"
+          "Admin"
+        ],
+        "summary": "Register a new admin",
+        "description": "Creates a new admin account.",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
         ],
         "parameters": [
           {
             "in": "body",
-            "name": "body",
+            "name": "admin",
+            "description": "Admin registration details",
             "required": true,
             "schema": {
               "type": "object",
               "required": [
                 "name",
                 "email",
-                "password",
-                "confirmPassword",
-                "mobileNumber"
+                "password"
               ],
               "properties": {
                 "name": {
-                  "type": "string"
+                  "type": "string",
+                  "example": "Admin Name"
                 },
                 "email": {
                   "type": "string",
-                  "format": "email"
+                  "format": "email",
+                  "example": "admin@example.com"
                 },
                 "password": {
-                  "type": "string"
-                },
-                "confirmPassword": {
-                  "type": "string"
-                },
-                "mobileNumber": {
-                  "type": "string"
+                  "type": "string",
+                  "example": "SecurePass123"
                 }
               }
             }
@@ -63,24 +66,32 @@
         ],
         "responses": {
           "201": {
-            "description": "User registered successfully"
+            "description": "Admin registered successfully"
           },
           "400": {
-            "description": "Invalid input"
+            "description": "Admin already exists or invalid data"
           }
         }
       }
     },
-    "/api/users/login": {
+    "/api/admin/login": {
       "post": {
-        "summary": "Login user",
         "tags": [
-          "Users"
+          "Admin"
+        ],
+        "summary": "Login an admin",
+        "description": "Authenticates an admin and returns a JWT token.",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
         ],
         "parameters": [
           {
             "in": "body",
-            "name": "body",
+            "name": "credentials",
+            "description": "Admin login credentials",
             "required": true,
             "schema": {
               "type": "object",
@@ -92,11 +103,11 @@
                 "email": {
                   "type": "string",
                   "format": "email",
-                  "example": "user@example.com"
+                  "example": "admin@example.com"
                 },
                 "password": {
                   "type": "string",
-                  "example": "string"
+                  "example": "SecurePass123"
                 }
               }
             }
@@ -107,251 +118,124 @@
             "description": "Login successful"
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Invalid email or password"
           }
         }
       }
     },
-    "/api/users/forgot-password": {
+    "/api/requests/createRequests": {
       "post": {
-        "summary": "Send password reset link",
         "tags": [
-          "Users"
+          "Requests"
         ],
-        "parameters": [
-          {
-            "in": "body",
-            "name": "body",
-            "required": true,
-            "schema": {
-              "type": "object",
-              "required": [
-                "email"
-              ],
-              "properties": {
-                "email": {
-                  "type": "string",
-                  "format": "email"
-                }
-              }
-            }
-          }
+        "summary": "Add a new request",
+        "description": "Creates a new request in the system.",
+        "consumes": [
+          "application/json"
         ],
-        "responses": {
-          "200": {
-            "description": "Reset link sent"
-          },
-          "404": {
-            "description": "User not found"
-          }
-        }
-      }
-    },
-    "/api/users/reset-password/{token}": {
-      "post": {
-        "summary": "Reset user password",
-        "tags": [
-          "Users"
-        ],
-        "parameters": [
-          {
-            "name": "token",
-            "in": "path",
-            "required": true,
-            "type": "string",
-            "description": "Password reset token received via email"
-          },
-          {
-            "in": "body",
-            "name": "body",
-            "required": true,
-            "schema": {
-              "type": "object",
-              "required": [
-                "password",
-                "confirmPassword"
-              ],
-              "properties": {
-                "password": {
-                  "type": "string",
-                  "format": "password"
-                },
-                "confirmPassword": {
-                  "type": "string",
-                  "format": "password"
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Password reset successful. You can now log in."
-          },
-          "400": {
-            "description": "Invalid or expired token, or passwords do not match"
-          },
-          "500": {
-            "description": "Server Error"
-          }
-        }
-      }
-    },
-    "/api/users/profile": {
-      "get": {
-        "summary": "Get logged-in user's profile",
-        "tags": [
-          "Users"
+        "produces": [
+          "application/json"
         ],
         "security": [
           {
             "BearerAuth": []
           }
         ],
-        "responses": {
-          "200": {
-            "description": "User profile details",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "id": {
-                      "type": "string",
-                      "example": "12345"
-                    },
-                    "name": {
-                      "type": "string",
-                      "example": "John Doe"
-                    },
-                    "email": {
-                      "type": "string",
-                      "format": "email",
-                      "example": "john.doe@example.com"
-                    },
-                    "mobileNumber": {
-                      "type": "string",
-                      "example": "+1234567890"
-                    },
-                    "profileImage": {
-                      "type": "string",
-                      "description": "URL of profile image",
-                      "example": "https://example.com/profile.jpg"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized - Missing or invalid token"
-          },
-          "404": {
-            "description": "User not found"
-          }
-        }
-      }
-    },
-    "/api/users/updateprofile/{userId}": {
-      "put": {
-        "summary": "Update user profile",
-        "description": "Updates a user's profile details including optional profile image upload.",
-        "tags": [
-          "Users"
-        ],
-        "consumes": [
-          "multipart/form-data"
-        ],
-        "produces": [
-          "application/json"
-        ],
         "parameters": [
           {
-            "name": "userId",
-            "in": "path",
+            "in": "body",
+            "name": "request",
+            "description": "Request data to be added",
             "required": true,
-            "type": "string",
-            "description": "ID of the user to update"
-          },
-          {
-            "name": "name",
-            "in": "formData",
-            "required": false,
-            "type": "string",
-            "description": "User's name"
-          },
-          {
-            "name": "email",
-            "in": "formData",
-            "required": false,
-            "type": "string",
-            "format": "email",
-            "description": "User's email address"
-          },
-          {
-            "name": "mobileNumber",
-            "in": "formData",
-            "required": false,
-            "type": "string",
-            "description": "User's mobile number"
-          },
-          {
-            "name": "role",
-            "in": "formData",
-            "required": false,
-            "type": "string",
-            "description": "User's role (e.g., admin, user)"
-          },
-          {
-            "name": "profileImage",
-            "in": "formData",
-            "required": false,
-            "type": "file",
-            "description": "Profile image file (JPEG, PNG)"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Profile updated successfully",
             "schema": {
               "type": "object",
+              "required": [
+                "fullName",
+                "email",
+                "mobileNumber",
+                "schoolName",
+                "message",
+                "classStandard",
+                "date"
+              ],
               "properties": {
-                "success": {
-                  "type": "boolean",
-                  "example": true
+                "fullName": {
+                  "type": "string",
+                  "example": "John Doe"
+                },
+                "email": {
+                  "type": "string",
+                  "format": "email",
+                  "example": "john.doe@example.com"
+                },
+                "mobileNumber": {
+                  "type": "string",
+                  "example": "1234567890"
+                },
+                "schoolName": {
+                  "type": "string",
+                  "example": "XYZ School"
                 },
                 "message": {
                   "type": "string",
-                  "example": "Profile updated successfully"
+                  "example": "Request for admission information."
                 },
-                "user": {
-                  "type": "object",
-                  "properties": {
-                    "_id": {
-                      "type": "string",
-                      "example": "12345"
-                    },
-                    "name": {
-                      "type": "string",
-                      "example": "John Doe"
-                    },
-                    "email": {
-                      "type": "string",
-                      "example": "john.doe@example.com"
-                    },
-                    "mobileNumber": {
-                      "type": "string",
-                      "example": "+1234567890"
-                    },
-                    "role": {
-                      "type": "string",
-                      "example": "user"
-                    },
-                    "profileImage": {
-                      "type": "string",
-                      "example": "https://res.cloudinary.com/demo/image/upload/v1234567890/profile_images/12345_profile.jpg"
-                    }
-                  }
+                "classStandard": {
+                  "type": "string",
+                  "example": "10"
+                },
+                "date": {
+                  "type": "string",
+                  "format": "date-time",
+                  "example": "2025-04-01T12:00:00Z"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Request created successfully",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "_id": {
+                  "type": "string",
+                  "example": "req12345"
+                },
+                "fullName": {
+                  "type": "string",
+                  "example": "John Doe"
+                },
+                "email": {
+                  "type": "string",
+                  "format": "email",
+                  "example": "john.doe@example.com"
+                },
+                "mobileNumber": {
+                  "type": "string",
+                  "example": "1234567890"
+                },
+                "schoolName": {
+                  "type": "string",
+                  "example": "XYZ School"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Request for admission information."
+                },
+                "classStandard": {
+                  "type": "string",
+                  "example": "10"
+                },
+                "date": {
+                  "type": "string",
+                  "format": "date-time",
+                  "example": "2025-04-01T12:00:00Z"
+                },
+                "createdBy": {
+                  "type": "string",
+                  "example": "user12345"
                 }
               }
             }
@@ -360,212 +244,20 @@
             "description": "Invalid request data"
           },
           "401": {
-            "description": "Unauthorized - Missing or invalid token"
-          },
-          "404": {
-            "description": "User not found"
+            "description": "Unauthorized"
           },
           "500": {
-            "description": "Internal server error"
+            "description": "Server error"
           }
-        },
-        "security": [
-          {
-            "BearerAuth": []
-          }
-        ]
+        }
       }
     },
-    "/api/users/user/{id}": {
+    "/api/requests/requests": {
       "get": {
-        "summary": "Get user by ID",
-        "description": "Fetches a single user by their ID.",
+        "summary": "Get all requests",
         "tags": [
-          "Users"
+          "Requests"
         ],
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string",
-            "description": "ID of the user to fetch"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "User fetched successfully",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "success": {
-                  "type": "boolean",
-                  "example": true
-                },
-                "user": {
-                  "type": "object",
-                  "properties": {
-                    "_id": {
-                      "type": "string",
-                      "example": "651fa12e4a2cf0a1ecf01b2e"
-                    },
-                    "name": {
-                      "type": "string",
-                      "example": "John Doe"
-                    },
-                    "email": {
-                      "type": "string",
-                      "example": "john@example.com"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Invalid user ID format",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "message": {
-                  "type": "string",
-                  "example": "Invalid user ID format"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized - Missing or invalid token"
-          },
-          "404": {
-            "description": "User not found",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "message": {
-                  "type": "string",
-                  "example": "User not found"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal server error",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "message": {
-                  "type": "string",
-                  "example": "Internal Server Error"
-                },
-                "error": {
-                  "type": "string",
-                  "example": "CastError: Invalid ObjectId"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "BearerAuth": []
-          }
-        ]
-      }
-    },
-    "/api/users/deleteUser/{id}": {
-      "delete": {
-        "summary": "Delete user",
-        "description": "Deletes a user by their ID.",
-        "tags": [
-          "Users"
-        ],
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string",
-            "description": "ID of the user to delete"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "User deleted successfully",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "message": {
-                  "type": "string",
-                  "example": "User deleted successfully"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Invalid user ID format",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "message": {
-                  "type": "string",
-                  "example": "Invalid user ID format"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized - Missing or invalid token"
-          },
-          "404": {
-            "description": "User not found",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "message": {
-                  "type": "string",
-                  "example": "User not found"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal server error",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "message": {
-                  "type": "string",
-                  "example": "Internal Server Error"
-                },
-                "error": {
-                  "type": "string",
-                  "example": "CastError: Invalid ObjectId"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "BearerAuth": []
-          }
-        ]
-      }
-    },
-    "/api/users/allUsers": {
-      "get": {
-        "tags": [
-          "Users"
-        ],
-        "summary": "Get all users",
-        "description": "Fetch a list of all registered users.",
         "produces": [
           "application/json"
         ],
@@ -576,7 +268,7 @@
         ],
         "responses": {
           "200": {
-            "description": "List of all users",
+            "description": "List of all requests",
             "schema": {
               "type": "array",
               "items": {
@@ -584,9 +276,139 @@
                 "properties": {
                   "_id": {
                     "type": "string",
-                    "example": "65304f120fcbdc001f94a838"
+                    "example": "req12345"
                   },
-                  "name": {
+                  "fullName": {
+                    "type": "string",
+                    "example": "John Doe"
+                  },
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "example": "john.doe@example.com"
+                  },
+                  "mobileNumber": {
+                    "type": "string",
+                    "example": "1234567890"
+                  },
+                  "schoolName": {
+                    "type": "string",
+                    "example": "XYZ School"
+                  },
+                  "message": {
+                    "type": "string",
+                    "example": "Request for information."
+                  },
+                  "classStandard": {
+                    "type": "string",
+                    "example": "10"
+                  },
+                  "date": {
+                    "type": "string",
+                    "format": "date-time",
+                    "example": "2025-04-01T12:00:00Z"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/api/requests/deleteRequests{id}": {
+      "delete": {
+        "tags": [
+          "Requests"
+        ],
+        "summary": "Delete a request",
+        "description": "Deletes a specific request by its ID.",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "The ID of the request to delete",
+            "example": "req12345"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Request deleted successfully",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Request deleted"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Request not found"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/api/requests/filter/search": {
+      "get": {
+        "tags": [
+          "Requests"
+        ],
+        "summary": "Filter requests by date and class",
+        "description": "Fetches requests filtered by optional `date` and `classStandard` query parameters.",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "date",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date",
+            "description": "Filter by date (YYYY-MM-DD)",
+            "example": "2025-04-01"
+          },
+          {
+            "name": "classStandard",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "description": "Filter by class standard",
+            "example": "10"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Filtered list of requests",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "_id": {
+                    "type": "string",
+                    "example": "req12345"
+                  },
+                  "fullName": {
                     "type": "string",
                     "example": "John Doe"
                   },
@@ -594,29 +416,33 @@
                     "type": "string",
                     "example": "john@example.com"
                   },
-                  "role": {
+                  "mobileNumber": {
                     "type": "string",
-                    "example": "customer"
+                    "example": "1234567890"
                   },
-                  "createdAt": {
+                  "schoolName": {
+                    "type": "string",
+                    "example": "XYZ School"
+                  },
+                  "message": {
+                    "type": "string",
+                    "example": "Need details about class 10"
+                  },
+                  "classStandard": {
+                    "type": "string",
+                    "example": "10"
+                  },
+                  "date": {
                     "type": "string",
                     "format": "date-time",
-                    "example": "2025-04-05T10:15:30Z"
-                  },
-                  "updatedAt": {
-                    "type": "string",
-                    "format": "date-time",
-                    "example": "2025-04-05T10:15:30Z"
+                    "example": "2025-04-01T12:00:00Z"
                   }
                 }
               }
             }
           },
-          "401": {
-            "description": "Unauthorized access"
-          },
           "500": {
-            "description": "Server Error"
+            "description": "Server error"
           }
         }
       }
