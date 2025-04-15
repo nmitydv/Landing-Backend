@@ -1,0 +1,48 @@
+# Node.js modules
+node_modules/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment variables
+.env
+
+# Operating system files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.idea/
+.vscode/
+
+# Dependency directories
+bower_components/
+
+# Build directories
+dist/
+build/
+
+# Coverage reports
+coverage/
+
+# npm package lock file (if you want to ignore it, optional)
+package-lock.json
+
+# TypeScript build output (if using TypeScript)
+*.tsbuildinfo
+
+# dotenv files with sensitive data
+*.env.local
+*.env.*.local
+
+# Next.js build directory (if you're using Next.js)
+.next/
+
+# Production build (if you're using frameworks like React, Vue, etc.)
+public/
+
+# Temporary files (can vary based on your setup)
+temp/
